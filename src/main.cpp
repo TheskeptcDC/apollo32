@@ -6,9 +6,9 @@
 AF_DCMotor rightmotor(1);
 AF_DCMotor leftmotor(2);
 
-// Define the pins for SoftwareSerial (choose pins that suit your board)
-#define ESP_RX 2  // ESP32 TX to Arduino RX
-#define ESP_TX 3  // ESP32 RX to Arduino TX
+// Define the pins for SoftwareSerial (choose pins that suit the board)
+#define ESP_RX 0  // ESP32 TX to Arduino RX
+#define ESP_TX 1  // ESP32 RX to Arduino TX
 
 // Initialize SoftwareSerial
 SoftwareSerial espSerial(ESP_RX, ESP_TX);
@@ -17,6 +17,10 @@ SoftwareSerial espSerial(ESP_RX, ESP_TX);
 int speed(int percent) {
   return map(percent, 0, 100, 0, 255);
 }
+
+// SPEED 
+int acceleration = 0;
+
 
 char command = ' ';  // Variable to store the Bluetooth command
 
@@ -35,19 +39,31 @@ void loop() {
     command = espSerial.read();  // Read the command from ESP32
     Serial.print("Command from ESP32: ");
     Serial.println(command);
-
+    if (command == 'q')
+    {
+      acceleration = 100;
+    }
+    else if (command == 3)
+    {
+      acceleration = 50;
+    }
+    else
+    {
+      acceleration = 20;
+    }
+    
     // Execute the command
     switch (command) {
-      case 'Right':  // Forward
+      case 'F':  // Forward
         Serial.println("Executing Forward Command");
-        rightmotor.setSpeed(speed(100));
+        rightmotor.setSpeed(speed(acceleration));
         rightmotor.run(FORWARD);  // Right motor moves forward
         leftmotor.setSpeed(speed(100));
         leftmotor.run(FORWARD);  // Left motor moves forward
         break;
       case 'B':  // Backward
         Serial.println("Executing Backward Command");
-        rightmotor.setSpeed(speed(100));
+        rightmotor.setSpeed(speed(acceleration));
         rightmotor.run(BACKWARD);  // Right motor moves backward
         leftmotor.setSpeed(speed(100));
         leftmotor.run(BACKWARD);  // Left motor moves backward
@@ -57,10 +73,20 @@ void loop() {
         rightmotor.run(RELEASE);  // Stop right motor
         leftmotor.run(RELEASE);  // Stop left motor
         break;
-      // Add other commands here
+      case 'R':  // RIGHT
+        Serial.println("Executing RIGHT Command");
+        rightmotor.run(BACKWARD);  // right motor
+        leftmotor.run(FORWARD);  // left motor
+        break;
+      case 'L':  // LEFT
+        Serial.println("Executing LEFT Command");
+        rightmotor.run(FORWARD);  // Stop right motor
+        leftmotor.run(BACKWARD);  // Stop left motor
+              // Add other commands here
       default:
         Serial.println("Unknown command");
         break;
     }
   }
+    // Serial.println("no command");
 }
