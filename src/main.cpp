@@ -1,4 +1,5 @@
 #include <AFMotor.h>
+#include <Servo.h>
 #include <SoftwareSerial.h>
 #include <Arduino.h>
 
@@ -21,8 +22,11 @@ int speed(int percent) {
 // SPEED 
 int acceleration = 0;
 
-
 char command = ' ';  // Variable to store the Bluetooth command
+
+Servo myservo;  // create servo object to control a servo
+int servo1 = 9;  // first servo motor 
+int servo2 = 10; // second servo motor
 
 void setup() {
   // Start SoftwareSerial for ESP32 communication
@@ -31,6 +35,10 @@ void setup() {
   // Start hardware Serial for USB communication
   Serial.begin(9600);  
   Serial.println("ESP Control Ready");
+
+  // Attach the servo to the pin
+  myservo.attach(servo1);
+  // myservo.attach(servo2);
 }
 
 void loop() {
@@ -82,11 +90,18 @@ void loop() {
         Serial.println("Executing LEFT Command");
         rightmotor.run(FORWARD);  // Stop right motor
         leftmotor.run(BACKWARD);  // Stop left motor
-              // Add other commands here
+        break;
+      case 'U':  // Open servo
+        Serial.println("Opening arm");
+        myservo.write(180);  //
+        break;
+      case 'u':  // Close servo
+        Serial.println("Closing arm");
+        myservo.write(0);  // close serv
+        break;
       default:
         Serial.println("Unknown command");
         break;
     }
   }
-    // Serial.println("no command");
 }
