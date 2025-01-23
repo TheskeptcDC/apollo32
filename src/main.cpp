@@ -6,6 +6,7 @@
 // Define motors
 AF_DCMotor rightmotor(1);
 AF_DCMotor leftmotor(2);
+AF_DCMotor arm(4);
 
 // Define the pins for SoftwareSerial (choose pins that suit the board)
 #define ESP_RX 0  // ESP32 TX to Arduino RX
@@ -37,8 +38,8 @@ void setup() {
   Serial.println("ESP Control Ready");
 
   // Attach the servo to the pin
-  myservo.attach(servo1);
-  // myservo.attach(servo2);
+  // myservo.attach(servo1);
+  myservo.attach(servo2);
 }
 
 void loop() {
@@ -91,17 +92,36 @@ void loop() {
         rightmotor.run(FORWARD);  // Stop right motor
         leftmotor.run(BACKWARD);  // Stop left motor
         break;
-      case 'U':  // Open servo
+//arm control        
+      case 'v':  // Open servo
         Serial.println("Opening arm");
-        myservo.write(180);  //
+        myservo.write(90);  //
+        delay(1500);   //delay for closing time /opening time 
         break;
-      case 'u':  // Close servo
+      case 'i': // move arm down
+        Serial.println("moving arm down");
+        arm.setSpeed(speed(100));
+        arm.run(BACKWARD);
+        delay(3000);
+        break;
+
+      case '1': // move arm up
+        Serial.println("moving arm up");
+        arm.setSpeed(speed(100));
+        arm.run(BACKWARD);
+        delay(3000);
+        break;
+
+      case 'V':  // Close servo
         Serial.println("Closing arm");
-        myservo.write(0);  // close serv
+        myservo.write(360);  // close serv
+        delay(1500);   //delay for closing time /opening time 
         break;
       default:
         Serial.println("Unknown command");
         break;
+       
     }
   }
+
 }
