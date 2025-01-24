@@ -22,6 +22,7 @@ int speed(int percent) {
 
 // SPEED 
 int acceleration = 0;
+// rightmotor.setSpeed(speed(100));
 
 char command = ' ';  // Variable to store the Bluetooth command
 
@@ -65,14 +66,14 @@ void loop() {
     switch (command) {
       case 'F':  // Forward
         Serial.println("Executing Forward Command");
-        rightmotor.setSpeed(speed(acceleration));
+        rightmotor.setSpeed(speed(100));
         rightmotor.run(FORWARD);  // Right motor moves forward
         leftmotor.setSpeed(speed(100));
         leftmotor.run(FORWARD);  // Left motor moves forward
         break;
       case 'B':  // Backward
         Serial.println("Executing Backward Command");
-        rightmotor.setSpeed(speed(acceleration));
+        rightmotor.setSpeed(speed(100));
         rightmotor.run(BACKWARD);  // Right motor moves backward
         leftmotor.setSpeed(speed(100));
         leftmotor.run(BACKWARD);  // Left motor moves backward
@@ -94,28 +95,30 @@ void loop() {
         break;
 //arm control        
       case 'v':  // Open servo
-        Serial.println("Opening arm");
-        myservo.write(90);  //
+        Serial.println("Opening GRIPPER");
+        myservo.write(120);  //
         delay(1500);   //delay for closing time /opening time 
         break;
       case 'i': // move arm down
         Serial.println("moving arm down");
         arm.setSpeed(speed(100));
-        arm.run(BACKWARD);
-        delay(3000);
+        arm.run(FORWARD);
+        delay(1500);
+        arm.run(RELEASE);
         break;
 
       case '1': // move arm up
         Serial.println("moving arm up");
         arm.setSpeed(speed(100));
         arm.run(BACKWARD);
-        delay(3000);
+        delay(1500);
+        arm.run(RELEASE);
         break;
 
       case 'V':  // Close servo
         Serial.println("Closing arm");
-        myservo.write(360);  // close serv
-        delay(1500);   //delay for closing time /opening time 
+        myservo.write(45);  // close serv
+        delay(1000);   //delay for closing time /opening time 
         break;
       default:
         Serial.println("Unknown command");
